@@ -185,8 +185,28 @@ class MapConnector:
         Returns the list of city names corresponding to the items in path, along with the total path length
         (in km or time) of this path. If the path is None (or empty), then you should return a message "No path found."
 
+        For example...
+            Suppose we had a self.vertices list of just the first part of the data set:
+            [(0, Birmingham, AL,671, 353), (1, Montgomery, AL, 680, 375), (2, Little Rock, AR, 585, 331),
+            (3, Phoenix, AZ, 268, 357), (4, Tucson, AZ, 286, 380), (5, Anaheim, CA, 175, 349)]
+
+            and self.first_city_id = 1  and self.second_city_id = 4
+
+            and you were given a path:
+            path = [(1, 3, 2845, 294533), (3, 5, 1670, 259455), (2, 5, 3895, 395542), (0, 2, 2895, 249543),
+            (0, 4, 1845, 342980)]
+
+            Then the output should be a string that says...
+            • Montgomery, AL
+            • Phoenix, AZ
+            • Anaheim, CA
+            • Little Rock, AR
+            • Birmingham, AL
+            • Tucson, AZ
+            total_distance = 13150.0	total_time = 1542053.0
+
         :param path: a list of Edges or None, if no path was found
-        :return: a string describing the path.
+        :return: a multi-line string describing the path.
         """
 
         if path is None or len(path)==0:
