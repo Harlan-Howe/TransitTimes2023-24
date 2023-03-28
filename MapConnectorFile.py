@@ -283,7 +283,7 @@ class MapConnector:
         makes the program freeze until the user releases the mouse in the window.
         :return: None
         """
-        if (self.click_mode != ClickHandlerMode.SEARCHING)
+        if (self.click_mode != ClickHandlerMode.SEARCHING):
             raise RuntimeError("You asked to wait_for_click, but it only works in SEARCHING mode. "
                                "(Otherwise the program would freeze indefinitely.)")
         self.waiting_for_click = True
