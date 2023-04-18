@@ -99,14 +99,26 @@ class MyTestCase(unittest.TestCase):
 
 
         path = []
-        for num in edge_nums:
-            path.append((self.connector.edges[num]))
         self.connector.first_city_id = 58
         self.connector.second_city_id = 4
+        expected = "Path found:\n• Albuquerque, NM\n• Oklahoma City, OK\n• Little Rock, AR\n• Dallas, TX\n• Fort Worth, TX\n• El Paso, TX\n• Tucson, AZ\ntotal_distance = 112256.0	total_time = 3462014.0"
+        print(f"You are starting at city #{self.connector.first_city_id}, which is {self.connector.vertices[self.connector.first_city_id]}.")
+        print("You're being given a path that includes the following: \n\tCity1\tCity2\tdist\ttime")
+        for num in edge_nums:
+            path.append((self.connector.edges[num]))
+            print(f"\t{self.connector.edges[num]}")
+        print(
+            f"You are ending at city #{self.connector.second_city_id}, which is {self.connector.vertices[self.connector.second_city_id]}.")
 
-        print(self.connector.describe_path(path))
-        self.assertEqual("Path found:\n• Albuquerque, NM\n• Oklahoma City, OK\n• Little Rock, AR\n• Dallas, TX\n• Fort Worth, TX\n• El Paso, TX\n• Tucson, AZ\ntotal_distance = 112256.0	total_time = 3462014.0",
-                            self.connector.describe_path(path),
+        print("-------The computer is expecting the following description -----")
+        print(expected)
+        print("----------------------------------------------------------------")
+        print("Now you are building your own description.")
+        result = self.connector.describe_path(path)
+        print("------- You described this as ----------------------------------")
+        print(result)
+        print("----------------------------------------------------------------")
+        self.assertEqual(expected, result,
                             "ZigZag path did not match. You might have the correct cities, but different spacing/punctuation. Be sure to check the comparison.")
         # self.connector.display_path(path, line_color=(128, 128, 255))
         # cv2.waitKey()
