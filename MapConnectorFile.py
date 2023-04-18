@@ -44,8 +44,16 @@ class MapConnector:
                 # city data consists of tab-delimited: id#, city name, state, x-coord, y-coord
                 city_data_file = open("City Data with coords.txt", "r")
                 for line in city_data_file:
+                    #"line" is now a string that corresponds to one line of the file.
+
                     parts: List[str] = line.split("\t")
+                    #"parts" is now a List of little strings that came from the longer "line," divided by tabs.
+                    # (The tabs are not included in any of the strings.)
+
+                    # remember, City_Data is an abbreviation for a Tuple of (int, str, str, int, int), which corresponds
+                    #    to (id, name, state, x, y).
                     city: City_Data = (int(parts[0]), parts[1], parts[2], int(parts[3]), int(parts[4]))
+
                     self.vertices.append(city)
             except IOError as ioErr:
                 print(f"Error reading City Data file: {ioErr}")
@@ -59,7 +67,9 @@ class MapConnector:
         opens & reads the data file containing roadway info about city connections into self.edges, a list of undirected edges.
         :return:
         """
-        self.edges: List[Edge_Data] = []  # an array of 4-element arrays ("Edge_Data"s)
+        self.edges: List[Edge_Data] = []  # an array of 4-element arrays ("Edge_Data"s). Remember that Edge_Data is an
+                                          # abbreviation for a Tuple of (int, int, float, float), corresponding to
+                                          # (cityA_1d, cityB_id, distance, time).
 
         if os.path.exists("connections.txt"):
             try:
@@ -67,7 +77,10 @@ class MapConnector:
                 connection_file = open("connections.txt", "r")
                 # -----------------------------------------
                 # TODO: You should write the portion of this method that fills
-                #       the edge list from the connection_file.
+                #       the edge list from the connection_file. Borrow heavily from the load_city_data() method I wrote,
+                #       above.
+
+
 
 
                 # -----------------------------------------
