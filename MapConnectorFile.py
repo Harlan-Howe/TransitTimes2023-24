@@ -73,7 +73,7 @@ class MapConnector:
 
         if os.path.exists("connections.txt"):
             try:
-                # connection data consists of tab-delimited: node1_id, node2_id, distance_in_meters, travel_time_in_seconds
+                # connection data consists of tab-delimited: edge_id(unused), node1_id, node2_id, distance_in_meters, travel_time_in_seconds
                 connection_file = open("connections.txt", "r")
                 # -----------------------------------------
                 # TODO: You should write the portion of this method that fills
