@@ -32,6 +32,7 @@ class MapConnector:
         self.current_map: numpy.ndarray = self.draw_cities_and_connections()
         # display the map you just made in a window called "Map"
         cv2.imshow("Map", self.current_map)
+        cv2.imwrite("Graph.jpg", self.current_map)
 
     def load_city_data(self):
         """
@@ -79,7 +80,9 @@ class MapConnector:
                 # TODO: You should write the portion of this method that fills
                 #       the edge list from the connection_file. Borrow heavily from the load_city_data() method I wrote,
                 #       above.
-
+                for line in connection_file:
+                    parts = line.split('\t')
+                    self.edges.append((int(parts[0]),int(parts[1]), float(parts[2]), float(parts[3])))
 
 
 
@@ -138,10 +141,20 @@ class MapConnector:
         :param size: the radius of the dot for the city
         :return: None
         """
-        cv2.circle(img=map, center=(int(city[3]), int(city[4])), radius=size, color=color,
+        cv2.circle(img=map, center=(int(city[3]*2), int(city[4])*2), radius=size, color=color,
                    thickness=-1)
 
-    def draw_edge(self, map:numpy.ndarray, city1_id:int, city2_id:int, color:Tuple[int,int,int]=(0, 0, 0)):
+    def label_city(self, map:numpy.ndarray, city:City_Data, num: int, color:Tuple[int,int,int]=(0, 0, 128), size:int=4):
+        cv2.putText(map, f"{num}", (int(city[3]*2)+size, int(city[4])*2-2*size), cv2.FONT_HERSHEY_SIMPLEX, 0.33, color, 1 ,
+        cv2.LINE_AA)
+
+    def label_edge(self, map:numpy.ndarray, city1_id:int, city2_id:int, num:int, color:Tuple[int,int,int]= (128,0,0)):
+        point1 = (int(self.vertices[city1_id][3]) * 2, int(self.vertices[city1_id][4]) * 2)
+        point2 = (int(self.vertices[city2_id][3]) * 2, int(self.vertices[city2_id][4]) * 2)
+        midpoint = (int((point1[0] + point2[0]) / 2)-2, int((point1[1] + point2[1]) / 2)-4)
+        cv2.putText(map, f"{num}", midpoint, cv2.FONT_HERSHEY_SIMPLEX, 0.33, color, 1, cv2.LINE_AA)
+
+    def draw_edge(self, map:numpy.ndarray, city1_id:int, city2_id:int, color:Tuple[float,float,float]=(0, 0, 0)):
         """
         draws a line into the graphic "map" for the given connection
         :param map: the graphic to alter
@@ -150,8 +163,8 @@ class MapConnector:
         :param color: note: color is BGR, 0-255
         :return: None
         """
-        point1 = (int(self.vertices[city1_id][3]), int(self.vertices[city1_id][4]))
-        point2 = (int(self.vertices[city2_id][3]), int(self.vertices[city2_id][4]))
+        point1 = (int(self.vertices[city1_id][3])*2, int(self.vertices[city1_id][4])*2)
+        point2 = (int(self.vertices[city2_id][3])*2, int(self.vertices[city2_id][4])*2)
         cv2.line(img=map, pt1=point1, pt2=point2, color=color)  # note color is BGR, 0-255.
 
     def draw_cities_and_connections(self, draw_cities:bool=True, draw_connections:bool=True) -> numpy.ndarray:
@@ -162,13 +175,21 @@ class MapConnector:
         :param draw_connections:
         :return: the new copy with the drawings in it.
         """
-        map = deepcopy(self.original_map_image)
+        # map = deepcopy(self.original_map_image)
+        shp = self.original_map_image.shape
+        map = numpy.ones((shp[0]*2, shp[1]*2, shp[2]), dtype=float)
+        city_counter = 0
         if draw_cities:
             for city in self.vertices:
                 self.draw_city(map, city)
+                self.label_city(map, city, city_counter)
+                city_counter += 1
+        line_counter = 0
         if draw_connections:
             for edge in self.edges:
-                self.draw_edge(map, int(edge[0]), int(edge[1]))  # note edge is a list of strings,
+                self.draw_edge(map, int(edge[0]), int(edge[1]),  color=(0,0.5,0))  # note edge is a list of strings,
+                self.label_edge(map, int(edge[0]), int(edge[1]), line_counter)
+                line_counter+=1
                 # so we have to cast to ints.
         return map
 

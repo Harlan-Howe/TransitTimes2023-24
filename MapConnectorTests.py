@@ -124,9 +124,9 @@ class MyTestCase(unittest.TestCase):
         # cv2.waitKey()
         # cv2.destroyAllWindows()
 
+
+
     #NOTE: Tests 6-9 are optimized for DISTANCE, not TIME.
-
-
     @unittest.skip("Skipping test 6. Get test 5 working first.")
     def test_6_find_very_short_path(self):
         edge_nums = [54,55]
