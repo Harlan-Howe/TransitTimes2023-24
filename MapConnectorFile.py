@@ -1,7 +1,7 @@
 import cv2
 from copy import deepcopy
 from enum import Enum
-from typing import TypeVar, List, Tuple
+from typing import List, Tuple
 import os
 
 import numpy
@@ -33,21 +33,35 @@ class MapConnector:
         # display the map you just made in a window called "Map"
         cv2.imshow("Map", self.current_map)
 
+        self.vertices: List[City_Data] = []  # an array of 5-element arrays ("City_Data"s)
+        self.edges: List[Edge_Data] = []  # an array of 4-element arrays ("Edge_Data"s). Remember that Edge_Data is an
+        # abbreviation for a Tuple of (int, int, float, float), corresponding to
+        # (cityA_1d, cityB_id, distance, time).
+
+        # variables for handling mouse clicks.
+        self.click_mode = None
+        self.waiting_for_click = False
+        self.first_city_id = -1
+        self.second_city_id = -1
+
     def load_city_data(self):
         """
         opens & reads the data file containing location info about cities into self.vertices.
         :return:
         """
-        self.vertices: List[City_Data] = []  # an array of 5-element arrays ("City_Data"s)
-        if os.path.exists("City Data with coords.txt"):
+        if os.path.exists("City Data with coordinates.txt"):
             try:
                 # city data consists of tab-delimited: id#, city name, state, x-coord, y-coord
-                city_data_file = open("City Data with coords.txt", "r")
+                city_data_file = open("City Data with coordinates.txt", "r")
+            except OSError as osErr:
+                print(f"Couldn't open the City Data file: {osErr}")
+                return
+            try:
                 for line in city_data_file:
-                    #"line" is now a string that corresponds to one line of the file.
+                    # "line" is now a string that corresponds to one line of the file.
 
                     parts: List[str] = line.split("\t")
-                    #"parts" is now a List of little strings that came from the longer "line," divided by tabs.
+                    # "parts" is now a List of little strings that came from the longer "line," divided by tabs.
                     # (The tabs are not included in any of the strings.)
 
                     # remember, City_Data is an abbreviation for a Tuple of (int, str, str, int, int), which corresponds
@@ -55,45 +69,40 @@ class MapConnector:
                     city: City_Data = (int(parts[0]), parts[1], parts[2], int(parts[3]), int(parts[4]))
 
                     self.vertices.append(city)
+
             except IOError as ioErr:
                 print(f"Error reading City Data file: {ioErr}")
             city_data_file.close()
         else:
-            print ("Could not find City Data file.")
-
+            print("Could not find City Data file.")
 
     def load_connection_data(self):
         """
-        opens & reads the data file containing roadway info about city connections into self.edges, a list of undirected edges.
+        opens & reads the data file containing roadway info about city connections into self.edges, a list of
+        undirected edges.
         :return:
         """
-        self.edges: List[Edge_Data] = []  # an array of 4-element arrays ("Edge_Data"s). Remember that Edge_Data is an
-                                          # abbreviation for a Tuple of (int, int, float, float), corresponding to
-                                          # (cityA_1d, cityB_id, distance, time).
-
         if os.path.exists("connections.txt"):
             try:
-                # connection data consists of tab-delimited: edge_id(unused), node1_id, node2_id, distance_in_meters, travel_time_in_seconds
                 connection_file = open("connections.txt", "r")
+            except OSError as osErr:
+                print(f"Couldn't open the City Data file: {osErr}")
+                return
+            try:
+                # connection data consists of tab-delimited: edge_id(unused), node1_id, node2_id,
+                # distance_in_meters, travel_time_in_seconds
                 # -----------------------------------------
                 # TODO: You should write the portion of this method that fills
                 #       the edge list from the connection_file. Borrow heavily from the load_city_data() method I wrote,
                 #       above.
-
-
-
+                pass  # replace this with your code.
 
                 # -----------------------------------------
             except IOError as ioErr:
                 print(f"Error reading Connection Data file: {ioErr}")
             connection_file.close()
         else:
-            print ("Could not find Connection Data file.")
-
-
-
-
-
+            print("Could not find Connection Data file.")
 
     def start_process(self):
         """
@@ -129,22 +138,25 @@ class MapConnector:
         self.current_map = self.draw_cities_and_connections()
         self.click_mode = ClickHandlerMode.FIRST_CLICK
 
-    def draw_city(self, map:numpy.ndarray, city:City_Data, color:Tuple[int,int,int]=(0, 0, 128), size:int=4):
+    @staticmethod  # does not require or change any self.* variables or methods.
+    def draw_city(map_to_draw_on: numpy.ndarray, city: City_Data, color: Tuple[int, int, int] = (0, 0, 128),
+                  size: int = 4):
         """
         draws a dot into the graphic "map" for the given city 5-element array
-        :param map: the graphic to alter
+        :param map_to_draw_on: the graphic to alter
         :param city: the 5-element array from which to get location info
         :param color: # note: color is BGR, 0-255
         :param size: the radius of the dot for the city
         :return: None
         """
-        cv2.circle(img=map, center=(int(city[3]), int(city[4])), radius=size, color=color,
+        cv2.circle(img=map_to_draw_on, center=(int(city[3]), int(city[4])), radius=size, color=color,
                    thickness=-1)
 
-    def draw_edge(self, map:numpy.ndarray, city1_id:int, city2_id:int, color:Tuple[int,int,int]=(0, 0, 0)):
+    def draw_edge(self, map_to_draw_on: numpy.ndarray, city1_id: int, city2_id: int,
+                  color: Tuple[int, int, int] = (0, 0, 0)):
         """
         draws a line into the graphic "map" for the given connection
-        :param map: the graphic to alter
+        :param map_to_draw_on: the graphic to alter
         :param city1_id: the 5-element array for the first city
         :param city2_id: the 5-element array for the second city, to which we connect.
         :param color: note: color is BGR, 0-255
@@ -152,9 +164,9 @@ class MapConnector:
         """
         point1 = (int(self.vertices[city1_id][3]), int(self.vertices[city1_id][4]))
         point2 = (int(self.vertices[city2_id][3]), int(self.vertices[city2_id][4]))
-        cv2.line(img=map, pt1=point1, pt2=point2, color=color)  # note color is BGR, 0-255.
+        cv2.line(img=map_to_draw_on, pt1=point1, pt2=point2, color=color)  # note color is BGR, 0-255.
 
-    def draw_cities_and_connections(self, draw_cities:bool=True, draw_connections:bool=True) -> numpy.ndarray:
+    def draw_cities_and_connections(self, draw_cities: bool = True, draw_connections: bool = True) -> numpy.ndarray:
         """
         makes a new graphic, based on a copy of the original map file, with
         the cities and connections drawn in it.
@@ -162,17 +174,17 @@ class MapConnector:
         :param draw_connections:
         :return: the new copy with the drawings in it.
         """
-        map = deepcopy(self.original_map_image)
+        map_copy = deepcopy(self.original_map_image)
         if draw_cities:
             for city in self.vertices:
-                self.draw_city(map, city)
+                self.draw_city(map_copy, city)
         if draw_connections:
             for edge in self.edges:
-                self.draw_edge(map, int(edge[0]), int(edge[1]))  # note edge is a list of strings,
+                self.draw_edge(map_copy, int(edge[0]), int(edge[1]))  # note edge is a list of strings,
                 # so we have to cast to ints.
-        return map
+        return map_copy
 
-    def display_path(self, path:List[Edge_Data], line_color:Tuple[int,int,int] = (0,255,0)):
+    def display_path(self, path: List[Edge_Data], line_color: Tuple[int, int, int] = (0, 255, 0)):
         """
         draws the edges that connect the cities in the list of cities in a
          color that makes them obvious. If the path is None, then you should
@@ -188,12 +200,11 @@ class MapConnector:
         # TODO: You should write this method
         print("You're supposed to replace this line with code to draw the path found.")
 
-
         # -----------------------------------------
         # NOTE: Don't forget to call cv2.imshow to make the screen update:
         cv2.imshow("Map", self.current_map)
 
-    def describe_path(self, path:List[Edge_Data])->str:
+    def describe_path(self, path: List[Edge_Data]) -> str:
         """
         Returns the list of city names corresponding to the items in path, along with the total path length
         (in km or time) of this path. If the path is None (or empty), then you should return a message "No path found."
@@ -222,17 +233,16 @@ class MapConnector:
         :return: a multi-line string describing the path.
         """
 
-        if path is None or len(path)==0:
+        if path is None or len(path) == 0:
             return "No path found."
         result = "Path found:\n"
         # -----------------------------------------
         # TODO: You should write this method
 
-
         # -----------------------------------------
         return result
 
-    def find_closest_city(self, pos:Tuple[int,int]) -> int:
+    def find_closest_city(self, pos: Tuple[int, int]) -> int:
         """
         identifies which city is closest to the coordinate given.
         :param pos: the coordinate of interest (x,y)
@@ -249,7 +259,7 @@ class MapConnector:
             counter += 1
         return which_city
 
-    def handle_click(self, event:int, x:int, y:int, flags:int, param):
+    def handle_click(self, event: int, x: int, y: int, flags: int, param):
         """
         this method gets called whenever the user moves or clicks or does
         anything mouse-related while the mouse is in the "Map" window.
@@ -268,13 +278,15 @@ class MapConnector:
                 # identify which city was selected, set the self.first_city_id variable
                 # and display the selected city on screen.
                 self.first_city_id = self.find_closest_city((x, y))
-                cv2.putText(img=self.current_map, \
+                cv2.putText(img=self.current_map,
                             text="from: {0}, {1}".format(self.vertices[self.first_city_id][1],
-                                                         self.vertices[self.first_city_id][2]), \
-                            org=(0, 400), \
-                            fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=0.5, \
-                            thickness=2, \
-                            color=(0, 128, 0), bottomLeftOrigin=False)
+                                                         self.vertices[self.first_city_id][2]),
+                            org=(0, 400),
+                            fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                            fontScale=0.5,
+                            thickness=2,
+                            color=(0, 128, 0),
+                            bottomLeftOrigin=False)
                 # update the screen with these changes.
                 cv2.imshow("Map", self.current_map)
                 # now prepare to receive the second city.
@@ -286,13 +298,15 @@ class MapConnector:
                 # identify which city was selected, set the self.second_city_id variable
                 # and display the selected city on screen.
                 self.second_city_id = self.find_closest_city((x, y))
-                cv2.putText(img=self.current_map, \
+                cv2.putText(img=self.current_map,
                             text="to: {0}, {1}".format(self.vertices[self.second_city_id][1],
-                                                       self.vertices[self.second_city_id][2]), \
-                            org=(0, 420), \
-                            fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=0.5,
-                            thickness=2, \
-                            color=(0, 0, 128), bottomLeftOrigin=False)
+                                                       self.vertices[self.second_city_id][2]),
+                            org=(0, 420),
+                            fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                            fontScale=0.5,
+                            thickness=2,
+                            color=(0, 0, 128),
+                            bottomLeftOrigin=False)
                 # update the screen with these changes
                 cv2.imshow("Map", self.current_map)
                 # now prepare for the search process. Any further clicks while
@@ -316,7 +330,7 @@ class MapConnector:
         makes the program freeze until the user releases the mouse in the window.
         :return: None
         """
-        if (self.click_mode != ClickHandlerMode.SEARCHING):
+        if self.click_mode != ClickHandlerMode.SEARCHING:
             raise RuntimeError("You asked to wait_for_click, but it only works in SEARCHING mode. "
                                "(Otherwise the program would freeze indefinitely.)")
         self.waiting_for_click = True
@@ -324,7 +338,7 @@ class MapConnector:
             cv2.waitKey(1)
             # if the user clicks the mouse, then handle_click() will change the waiting_for_click variable.
 
-    def get_neighbor_edges(self,city:int)->List[Edge_Data]:
+    def get_neighbor_edges(self, city: int) -> List[Edge_Data]:
         """
         gets a list of all edges that have the given city on one end or the other
         :param city: the id of the city in question
@@ -336,7 +350,7 @@ class MapConnector:
                 result.append(edge)
         return result
 
-    def perform_search(self)->List[Edge_Data]:
+    def perform_search(self) -> List[Edge_Data]:
         """
         finds the shortest path from self.first_city_id to self.second_city_id.
         Whether this is the shortest driving distance or the shortest time duration
@@ -345,14 +359,12 @@ class MapConnector:
         or None, if no such path can be found.
         """
 
-        result_path:List[Edge_Data] = []
+        result_path: List[Edge_Data] = []
         # -----------------------------------------
         # TODO: You should write this method here.
 
-
-
-
-        # Hint: if you would like to be able to pause after each cycle of the search, consider adding "wait_for_click()" inside your primary loop.
+        # Hint: if you would like to be able to pause after each cycle of the search, consider adding "wait_for_click()"
+        # inside your primary loop.
         # ...but be sure to delete it for your finished program!
         # -----------------------------------------
         return result_path
