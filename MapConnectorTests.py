@@ -8,14 +8,17 @@ class MyTestCase(unittest.TestCase):
     def setUp(self) -> None:
         self.connector = MapConnector()
 
-
+    # the first test is a little annoying after you get it working, so you might wish to uncomment the next line once
+    #   you've passed the test.
+    # @unittest.skip("Skipping test 1.")
     def test_1_display_path(self):
         """
         Note: this also depends on your having a working load_connection_data() method in MapConnector. If you haven't
         written it yet, you'll see an index error since you are trying to get item 47 from an empty list.
 
+        There are no actual tests in this -- you're just checking that a window shows up with the pink line described.
         """
-        edge_nums = [47,51,33,32,19,11]
+        edge_nums = [47, 51, 33, 32, 19, 11]
         example_path = []
         for num in edge_nums:
             example_path.append(self.connector.edges[num])
@@ -27,12 +30,11 @@ class MyTestCase(unittest.TestCase):
         cv2.waitKey()
         cv2.destroyAllWindows()
 
-    @unittest.skip("Skipping test 2. Get test 1 working first.")
     def test_2_print_no_path(self):
-        self.assertEqual("No path found.", self.connector.describe_path(None), "If path is none, we should get a message.")
+        self.assertEqual("No path found.", self.connector.describe_path(None),
+                         "If path is None, we should get a message.")
 
 
-    @unittest.skip("Skipping test 3. Get test 2 working first.")
     def test_3_east_west_path_description(self):
         edge_nums = [90,54,48,2]
         path = []
@@ -61,7 +63,6 @@ class MyTestCase(unittest.TestCase):
         # cv2.destroyAllWindows()
 
 
-    # @unittest.skip("Skipping test 4. Get test 3 working first.")
     def test_4_west_east_path_description(self):
         edge_nums = [4,73,50,52,56,58,89,133,138,179,180]
 
@@ -92,7 +93,6 @@ class MyTestCase(unittest.TestCase):
         # cv2.destroyAllWindows()
 
 
-    @unittest.skip("Skipping test 5. Get test 4 working first.")
     def test_5_zig_zag_path_description(self):
 
         edge_nums = [203,123,99,15,17,24]
@@ -126,8 +126,6 @@ class MyTestCase(unittest.TestCase):
 
     #NOTE: Tests 6-9 are optimized for DISTANCE, not TIME.
 
-
-    @unittest.skip("Skipping test 6. Get test 5 working first.")
     def test_6_find_very_short_path(self):
         edge_nums = [54,55]
         expected_path = []
@@ -140,7 +138,6 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected_path,result,"Extra Short path did not match expected.")
 
 
-    @unittest.skip("Skipping test 7. Get test 6 working first.")
     def test_7_find_short_path(self):
         edge_nums = [131,143,142]
         expected_path = []
@@ -153,7 +150,6 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected_path,result,"Short path did not match expected.")
 
 
-    @unittest.skip("Skipping test 8. Get test 7 working first.")
     def test_8_find_medium_path(self):
         edge_nums = [3,73,35,36,31]
         expected_path = []
@@ -166,7 +162,6 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected_path,result,"Medium path did not match expected.")
 
 
-    @unittest.skip("Skipping test 9. Get test 8 working first.")
     def test_9_find_long_path(self):
         edge_nums = [121,118,151,156,161,175,174,189,186,188,193]
         expected_path = []
