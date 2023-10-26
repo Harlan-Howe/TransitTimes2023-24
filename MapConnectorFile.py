@@ -255,6 +255,7 @@ class MapConnector:
         if path is None or len(path) == 0:
             return "No path found."
 
+        logging.info("I'm logging the following so you can better understand what the issue is - Mr. Howe")
         for e in path:
             c1 = self.vertices[e[0]]
             c2 = self.vertices[e[1]]
