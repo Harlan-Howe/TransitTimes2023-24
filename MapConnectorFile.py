@@ -153,7 +153,7 @@ class MapConnector:
                    thickness=-1)
 
     def draw_edge(self, map_to_draw_on: numpy.ndarray, city1_id: int, city2_id: int,
-                  color: Tuple[int, int, int] = (0, 0, 0)):
+                  color: Tuple[int, int, int] = (0, 0, 0), thickness = 1):
         """
         draws a line into the graphic "map" for the given connection
         :param map_to_draw_on: the graphic to alter
@@ -164,7 +164,9 @@ class MapConnector:
         """
         point1 = (int(self.vertices[city1_id][3]), int(self.vertices[city1_id][4]))
         point2 = (int(self.vertices[city2_id][3]), int(self.vertices[city2_id][4]))
-        cv2.line(img=map_to_draw_on, pt1=point1, pt2=point2, color=color)  # note color is BGR, 0-255.
+
+        # Draw the line. Note color is BGR, 0-255.
+        cv2.line(img=map_to_draw_on, pt1=point1, pt2=point2, color=color, thickness=thickness)
 
     def draw_cities_and_connections(self, draw_cities: bool = True, draw_connections: bool = True) -> numpy.ndarray:
         """
