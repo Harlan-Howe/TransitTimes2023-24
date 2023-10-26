@@ -2,9 +2,14 @@ import cv2
 from copy import deepcopy
 from enum import Enum
 from typing import List, Tuple
-import os
+import os, logging
 
 import numpy
+
+logging.basicConfig(level=logging.INFO)  # simple version to the output console
+# logging.basicConfig(level=logging.DEBUG, filename=f"log {datetime.datetime.now():%m-%d@%H:%M:%S}.txt",
+#                     format="%(asctime)s %(levelname)s %(message)s",
+#                     datefmt="%H:%M:%S %p --- ")  # more robust, sent to a file cNode = Tuple[int, T]
 
 City_Data = Tuple[int, str, str, int, int]
 Edge_Data = Tuple[int, int, float, float]
@@ -89,8 +94,12 @@ class MapConnector:
                 print(f"Couldn't open the City Data file: {osErr}")
                 return
             try:
-                # connection data consists of tab-delimited: edge_id(unused), node1_id, node2_id,
-                # distance_in_meters, travel_time_in_seconds
+                # connection data consists of tab-delimited:
+                #    edge_id(unused),
+                #    node1_id,
+                #    node2_id,
+                #    distance_in_meters,
+                #    travel_time_in_seconds
                 # -----------------------------------------
                 # TODO: You should write the portion of this method that fills
                 #       the edge list from the connection_file. Borrow heavily from the load_city_data() method I wrote,
@@ -138,6 +147,24 @@ class MapConnector:
         self.current_map = self.draw_cities_and_connections()
         self.click_mode = ClickHandlerMode.FIRST_CLICK
 
+    def draw_cities_and_connections(self, draw_cities: bool = True, draw_connections: bool = True) -> numpy.ndarray:
+        """
+        makes a new graphic, based on a copy of the original map file, with
+        the cities and connections drawn in it.
+        :param draw_cities:
+        :param draw_connections:
+        :return: the new copy with the drawings in it.
+        """
+        map_copy = deepcopy(self.original_map_image)
+        if draw_cities:
+            for city in self.vertices:
+                self.draw_city(map_copy, city)
+        if draw_connections:
+            for edge in self.edges:
+                self.draw_edge(map_copy, int(edge[0]), int(edge[1]))  # note edge is a list of strings,
+                # so we have to cast to ints.
+        return map_copy
+
     @staticmethod  # does not require or change any self.* variables or methods.
     def draw_city(map_to_draw_on: numpy.ndarray, city: City_Data, color: Tuple[int, int, int] = (0, 0, 128),
                   size: int = 4):
@@ -168,24 +195,6 @@ class MapConnector:
         # Draw the line. Note color is BGR, 0-255.
         cv2.line(img=map_to_draw_on, pt1=point1, pt2=point2, color=color, thickness=thickness)
 
-    def draw_cities_and_connections(self, draw_cities: bool = True, draw_connections: bool = True) -> numpy.ndarray:
-        """
-        makes a new graphic, based on a copy of the original map file, with
-        the cities and connections drawn in it.
-        :param draw_cities:
-        :param draw_connections:
-        :return: the new copy with the drawings in it.
-        """
-        map_copy = deepcopy(self.original_map_image)
-        if draw_cities:
-            for city in self.vertices:
-                self.draw_city(map_copy, city)
-        if draw_connections:
-            for edge in self.edges:
-                self.draw_edge(map_copy, int(edge[0]), int(edge[1]))  # note edge is a list of strings,
-                # so we have to cast to ints.
-        return map_copy
-
     def display_path(self, path: List[Edge_Data], line_color: Tuple[int, int, int] = (0, 255, 0)):
         """
         draws the edges that connect the cities in the list of cities in a
@@ -200,6 +209,9 @@ class MapConnector:
         """
         # -----------------------------------------
         # TODO: You should write this method
+
+        # Strong hint: Make use of the draw_edge() method! Consider giving it a thickness of 2 or more, so you can see
+        # the line easily.
         print("You're supposed to replace this line with code to draw the path found.")
 
         # -----------------------------------------
