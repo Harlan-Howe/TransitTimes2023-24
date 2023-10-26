@@ -264,6 +264,37 @@ class MapConnector:
         # -----------------------------------------
         return result
 
+    def get_neighbor_edges(self, city: int) -> List[Edge_Data]:
+        """
+        gets a list of all edges that have the given city on one end or the other
+        :param city: the id of the city in question
+        :return: a list of edge_data values
+        """
+        result = []
+        for edge in self.edges:
+            if edge[0] == city or edge[1] == city:
+                result.append(edge)
+        return result
+
+    def perform_search(self) -> List[Edge_Data]:
+        """
+        finds the shortest path from self.first_city_id to self.second_city_id.
+        Whether this is the shortest driving distance or the shortest time duration
+        is the programmer's choice. (For testing, use distance.)
+        :return: a list of EdgeData's (like what you received in describePath) that represents the path,
+        or None, if no such path can be found.
+        """
+
+        result_path: List[Edge_Data] = []
+        # -----------------------------------------
+        # TODO #3: You should write this method here.
+
+        # Hint: if you would like to be able to pause after each cycle of the search, consider adding "wait_for_click()"
+        # inside your primary loop.
+        # ...but be sure to delete it for your finished program!
+        # -----------------------------------------
+        return result_path
+
     def find_closest_city(self, pos: Tuple[int, int]) -> int:
         """
         identifies which city is closest to the coordinate given.
@@ -360,36 +391,7 @@ class MapConnector:
             cv2.waitKey(1)
             # if the user clicks the mouse, then handle_click() will change the waiting_for_click variable.
 
-    def get_neighbor_edges(self, city: int) -> List[Edge_Data]:
-        """
-        gets a list of all edges that have the given city on one end or the other
-        :param city: the id of the city in question
-        :return: a list of edge_data values
-        """
-        result = []
-        for edge in self.edges:
-            if edge[0] == city or edge[1] == city:
-                result.append(edge)
-        return result
 
-    def perform_search(self) -> List[Edge_Data]:
-        """
-        finds the shortest path from self.first_city_id to self.second_city_id.
-        Whether this is the shortest driving distance or the shortest time duration
-        is the programmer's choice. (For testing, use distance.)
-        :return: a list of EdgeData's (like what you received in describePath) that represents the path, 
-        or None, if no such path can be found.
-        """
-
-        result_path: List[Edge_Data] = []
-        # -----------------------------------------
-        # TODO #3: You should write this method here.
-
-        # Hint: if you would like to be able to pause after each cycle of the search, consider adding "wait_for_click()"
-        # inside your primary loop.
-        # ...but be sure to delete it for your finished program!
-        # -----------------------------------------
-        return result_path
 
 
 if __name__ == '__main__':
