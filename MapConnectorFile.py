@@ -104,7 +104,7 @@ class MapConnector:
                 # TODO: You should write the portion of this method that fills
                 #       the edge list from the connection_file. Borrow heavily from the load_city_data() method I wrote,
                 #       above.
-                pass  # replace this with your code.
+                print("I am not yet loading any edges!")  # replace this with your code.
 
                 # -----------------------------------------
             except IOError as ioErr:
