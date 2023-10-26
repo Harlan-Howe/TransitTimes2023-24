@@ -101,7 +101,7 @@ class MapConnector:
                 #    distance_in_meters,
                 #    travel_time_in_seconds
                 # -----------------------------------------
-                # TODO: You should write the portion of this method that fills
+                # TODO #0: You should write the portion of this method that fills
                 #       the edge list from the connection_file. Borrow heavily from the load_city_data() method I wrote,
                 #       above.
                 print("I am not yet loading any edges!")  # replace this with your code.
@@ -130,7 +130,7 @@ class MapConnector:
             self.display_path(path)
             print(self.describe_path(path))
 
-            # TODO: consider the following. No action is required.
+            # TODO (optional): consider the following. No action is required.
             #  Optional: if you would like to save a copy of the graphic that results,
             #  you can say:
             #     cv2.imsave("pickAFilename.png",self.current_map).
@@ -208,7 +208,7 @@ class MapConnector:
         :return: None
         """
         # -----------------------------------------
-        # TODO: You should write this method
+        # TODO #1: You should write this method
 
         # Strong hint: Make use of the draw_edge() method! Consider giving it a thickness of 2 or more, so you can see
         # the line easily.
@@ -259,7 +259,7 @@ class MapConnector:
 
 
         # -----------------------------------------
-        # TODO: You should write this method
+        # TODO #2: You should write this method
 
         # -----------------------------------------
         return result
@@ -383,7 +383,7 @@ class MapConnector:
 
         result_path: List[Edge_Data] = []
         # -----------------------------------------
-        # TODO: You should write this method here.
+        # TODO #3: You should write this method here.
 
         # Hint: if you would like to be able to pause after each cycle of the search, consider adding "wait_for_click()"
         # inside your primary loop.
