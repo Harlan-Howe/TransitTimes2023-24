@@ -31,17 +31,17 @@ class MapConnector:
         """
         self.original_map_image: numpy.ndarray = cv2.imread("Major_US_Cities.png")  # by default this reads as color.
 
+        self.vertices: List[City_Data] = []  # an array of 5-element arrays ("City_Data"s)
+        self.edges: List[Edge_Data] = []  # an array of 4-element arrays ("Edge_Data"s). Remember that Edge_Data is an
+        # abbreviation for a Tuple of (int, int, float, float), corresponding to
+        # (cityA_1d, cityB_id, distance, time).
+
         self.load_city_data()
         self.load_connection_data()
 
         self.current_map: numpy.ndarray = self.draw_cities_and_connections()
         # display the map you just made in a window called "Map"
         cv2.imshow("Map", self.current_map)
-
-        self.vertices: List[City_Data] = []  # an array of 5-element arrays ("City_Data"s)
-        self.edges: List[Edge_Data] = []  # an array of 4-element arrays ("Edge_Data"s). Remember that Edge_Data is an
-        # abbreviation for a Tuple of (int, int, float, float), corresponding to
-        # (cityA_1d, cityB_id, distance, time).
 
         # variables for handling mouse clicks.
         self.click_mode = None
@@ -54,10 +54,10 @@ class MapConnector:
         opens & reads the data file containing location info about cities into self.vertices.
         :return:
         """
-        if os.path.exists("City Data with coordinates.txt"):
+        if os.path.exists("City Data with coords.txt"):
             try:
                 # city data consists of tab-delimited: id#, city name, state, x-coord, y-coord
-                city_data_file = open("City Data with coordinates.txt", "r")
+                city_data_file = open("City Data with coords.txt", "r")
             except OSError as osErr:
                 print(f"Couldn't open the City Data file: {osErr}")
                 return
@@ -84,7 +84,7 @@ class MapConnector:
     def load_connection_data(self):
         """
         opens & reads the data file containing roadway info about city connections into self.edges, a list of
-        undirected edges.
+        undirected edges. (That is, self.edges should become a list of Edge_Data.)
         :return:
         """
         if os.path.exists("connections.txt"):
@@ -249,7 +249,15 @@ class MapConnector:
 
         if path is None or len(path) == 0:
             return "No path found."
+
+        for e in path:
+            c1 = self.vertices[e[0]]
+            c2 = self.vertices[e[1]]
+            logging.info(f"{c1[1]}, {c1[2]} <--> {c2[1]}, {c2[2]}")
+
         result = "Path found:\n"
+
+
         # -----------------------------------------
         # TODO: You should write this method
 
