@@ -147,6 +147,7 @@ class MapConnector:
         self.current_map = self.draw_cities_and_connections()
         self.click_mode = ClickHandlerMode.FIRST_CLICK
 
+    # ============================================================================ DRAWING METHODS
     def draw_cities_and_connections(self, draw_cities: bool = True, draw_connections: bool = True) -> numpy.ndarray:
         """
         makes a new graphic, based on a copy of the original map file, with
@@ -194,7 +195,9 @@ class MapConnector:
 
         # Draw the line. Note color is BGR, 0-255.
         cv2.line(img=map_to_draw_on, pt1=point1, pt2=point2, color=color, thickness=thickness)
+    # =========================================================================================
 
+    # ============================================================================ PATH METHODS
     def display_path(self, path: List[Edge_Data], line_color: Tuple[int, int, int] = (0, 255, 0)):
         """
         draws the edges that connect the cities in the list of cities in a
@@ -294,7 +297,9 @@ class MapConnector:
         # ...but be sure to delete it for your finished program!
         # -----------------------------------------
         return result_path
+    # =========================================================================================
 
+    # ============================================================================ MOUSE METHODS
     def find_closest_city(self, pos: Tuple[int, int]) -> int:
         """
         identifies which city is closest to the coordinate given.
@@ -390,8 +395,7 @@ class MapConnector:
         while self.waiting_for_click:
             cv2.waitKey(1)
             # if the user clicks the mouse, then handle_click() will change the waiting_for_click variable.
-
-
+    # =========================================================================================
 
 
 if __name__ == '__main__':
