@@ -102,9 +102,10 @@ class MapConnector:
                 #    distance_in_meters,
                 #    travel_time_in_seconds
                 # -----------------------------------------
-                # TODO #0: You should write the portion of this method that fills
-                #       the edge list from the connection_file. Borrow heavily from the load_city_data() method I wrote,
-                #       above.
+                # TODO #0: You should write this portion of this method:
+                #
+                #       Fill the edge list from the connection_file. Borrow heavily from the load_city_data() method I
+                #       wrote, above.
                 print("I am not yet loading any edges!")  # replace this with your code.
 
                 # -----------------------------------------
@@ -132,6 +133,7 @@ class MapConnector:
             print(self.describe_path(path))
 
             # TODO (optional): consider the following. No action is required.
+
             #  Optional: if you would like to save a copy of the graphic that results,
             #  you can say:
             #     cv2.imsave("pickAFilename.png",self.current_map).
