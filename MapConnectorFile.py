@@ -95,7 +95,7 @@ class MapConnector:
                 print(f"Couldn't open the City Data file: {osErr}")
                 return
             try:
-                # connection data consists of tab-delimited:
+                # connection data in the file consists of tab-delimited:
                 #    edge_id(unused),
                 #    node1_id,
                 #    node2_id,
@@ -259,7 +259,7 @@ class MapConnector:
         for e in path:
             c1 = self.vertices[e[0]]
             c2 = self.vertices[e[1]]
-            logging.info(f"{c1[1]}, {c1[2]} <--> {c2[1]}, {c2[2]}")
+            logging.info(f"{c1[1]}, {c1[2]} <--> {c2[1]}, {c2[2]}\t{e[2]}meters\t{e[3]}seconds.")
 
         result = "Path found:\n"
 
