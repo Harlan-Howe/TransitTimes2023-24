@@ -2,7 +2,8 @@ import cv2
 from copy import deepcopy
 from enum import Enum
 from typing import List, Tuple
-import os, logging
+import os
+import logging
 
 import numpy
 
@@ -181,13 +182,14 @@ class MapConnector:
                    thickness=-1)
 
     def draw_edge(self, map_to_draw_on: numpy.ndarray, city1_id: int, city2_id: int,
-                  color: Tuple[int, int, int] = (0, 0, 0), thickness = 1):
+                  color: Tuple[int, int, int] = (0, 0, 0), thickness: int = 1):
         """
         draws a line into the graphic "map" for the given connection
         :param map_to_draw_on: the graphic to alter
         :param city1_id: the 5-element array for the first city
         :param city2_id: the 5-element array for the second city, to which we connect.
         :param color: note: color is BGR, 0-255
+        :param thickness: number of pixels wide to draw string
         :return: None
         """
         point1 = (int(self.vertices[city1_id][3]), int(self.vertices[city1_id][4]))
@@ -260,7 +262,6 @@ class MapConnector:
 
         result = "Path found:\n"
 
-
         # -----------------------------------------
         # TODO #2: You should write this method
 
@@ -287,7 +288,6 @@ class MapConnector:
         :return: a list of EdgeData's (like what you received in describePath) that represents the path,
         or None, if no such path can be found.
         """
-
         result_path: List[Edge_Data] = []
         # -----------------------------------------
         # TODO #3: You should write this method here.
@@ -326,7 +326,7 @@ class MapConnector:
         :param event: what kind of mouse event was this?
         :param x:
         :param y:
-        :param flags: I suspect this will be info about modifier keys (e.g. shift)
+        :param flags: Not used. I suspect this will be info about modifier keys (e.g. shift)
         :param param: additional info from cv2... probably unused.
         :return: None
         """
