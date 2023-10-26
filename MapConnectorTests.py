@@ -8,7 +8,10 @@ class MyTestCase(unittest.TestCase):
     def setUp(self) -> None:
         self.connector = MapConnector()
 
-    # the first test is a little annoying after you get it working, so you might wish to uncomment the next line once
+    def test_0_load_edges(self):
+        self.assertEqual(204, len(self.connector.edges), "You haven't loaded the correct number of edges.")
+
+    # Test #1 is a little annoying after you get it working, so you might wish to uncomment the next line once
     #   you've passed the test.
     # @unittest.skip("Skipping test 1.")
     def test_1_display_path(self):
