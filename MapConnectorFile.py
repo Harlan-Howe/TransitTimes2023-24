@@ -241,6 +241,15 @@ class MapConnector:
             path = [(1, 3, 2845, 294533), (3, 5, 1670, 259455), (2, 5, 3895, 395542), (0, 2, 2895, 249543),
             (0, 4, 1845, 342980)]
 
+            These edges are talking about the following city connections:
+            Montgomery, AL <-> Phoenix, AZ
+            Phoenix, AZ <-> Anaheim, CA
+            Little Rock, AR <-> Anaheim, CA
+            Birmingham, AL <-> Little Rock, AR
+            Birmingham, AL <-> Tucson, AZ
+            (Note that the second city of one edge _sometimes_ matches the first city of the next edge, but not always,
+                 because these are undirected edges. But consecutive edges always DO have a city in common.)
+
             Then the output should be a string that says...
             • Montgomery, AL
             • Phoenix, AZ
